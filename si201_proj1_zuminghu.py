@@ -9,12 +9,18 @@
 def read_file(filename):
     try:
         f = open(filename, 'r')
-        return None
+        return f
     except FileNotFoundError:
         print(f"read file failed")
         return None
 
+def file_information(file):
+    # file information
+    first_row = file.readline()
+    
+    pass
+
 def main():
     file = read_file("penguins.csv")
-    
+    file_information(file)
 main()
