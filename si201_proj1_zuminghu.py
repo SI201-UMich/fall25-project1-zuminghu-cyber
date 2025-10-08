@@ -14,16 +14,17 @@ def load_file(filename):
         seperated = first_row.split(',')
         for key in seperated[1:]:
             dict[key.strip('\n').strip('"')] = []
-        print(dict)
 
-        col = 1
-        for idx in dict.keys():
-            for line in f:
-                dict[idx].append(line.split(',')[col].strip('\n').strip('"'))
-            col += 1
-        print(dict)
-
-
+        for line in f:
+            datas = line.split(',')
+            dict['species'].append(datas[1].strip('\n').strip('"'))
+            dict['island'].append(datas[2].strip('\n').strip('"'))
+            dict['bill_length_mm'].append(datas[3].strip('\n').strip('"'))
+            dict['bill_depth_mm'].append(datas[4].strip('\n').strip('"'))
+            dict['flipper_length_mm'].append(datas[5].strip('\n').strip('"'))
+            dict['body_mass_g'].append(datas[6].strip('\n').strip('"'))
+            dict['sex'].append(datas[7].strip('\n').strip('"'))
+            dict['year'].append(datas[8].strip('\n').strip('"'))
         return dict
     except FileNotFoundError:
         print(f"read file failed")
