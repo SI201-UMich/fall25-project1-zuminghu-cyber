@@ -25,18 +25,31 @@ def load_file(filename):
             dict['body_mass_g'].append(datas[6].strip('\n').strip('"'))
             dict['sex'].append(datas[7].strip('\n').strip('"'))
             dict['year'].append(datas[8].strip('\n').strip('"'))
+        f.close()
         return dict
     except FileNotFoundError:
         print(f"read file failed")
         return None
 
-def file_information(file):
+def file_information(dict):
     # file information
-    #first_row = file.readline()
-
+    print(f"The names of each column are:", end = '')
+    for name in list(dict.keys()):
+        print(' ', name, end = '')
+    print(f"\n\nThe number of rows: {len(dict[list(dict.keys())[1]])}")
+    print("\nSample row: ", end = '')
+    for key in dict.keys():
+        print(dict[key][0], end = ' ')
+        
     pass
+
+def generate_report():
+    f = open("output.txt", "w")
+    f.write("Hello world")
+    f.close()
 
 def main():
     file = load_file("penguins.csv")
     file_information(file)
+    generate_report()
 main()
