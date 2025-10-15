@@ -1,1 +1,2 @@
-Hello world
+Average body mass for male penguins on Torgersen island is 4034.78 grams.
+The diﬀerence between the average bill length for Chinstrap and Adelie on Dream island is 10.33 mm.
