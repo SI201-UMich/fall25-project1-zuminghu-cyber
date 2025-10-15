@@ -16,20 +16,33 @@ def load_file(filename):
             dict[key.strip('\n').strip('"')] = []
 
         for line in f:
-            datas = line.split(',')
-            dict['species'].append(datas[1].strip('\n').strip('"'))
-            dict['island'].append(datas[2].strip('\n').strip('"'))
-            dict['bill_length_mm'].append(datas[3].strip('\n').strip('"'))
-            dict['bill_depth_mm'].append(datas[4].strip('\n').strip('"'))
-            dict['flipper_length_mm'].append(datas[5].strip('\n').strip('"'))
-            dict['body_mass_g'].append(datas[6].strip('\n').strip('"'))
-            dict['sex'].append(datas[7].strip('\n').strip('"'))
-            dict['year'].append(datas[8].strip('\n').strip('"'))
+            datas = line.rstrip('\n').split(',')
+            dict['species'].append(to_str_or_minus1(datas[1]))
+            dict['island'].append(to_str_or_minus1(datas[2]))
+            dict['bill_length_mm'].append(to_num_or_minus1(datas[3], float))
+            dict['bill_depth_mm'].append(to_num_or_minus1(datas[4], float))
+            dict['flipper_length_mm'].append(to_num_or_minus1(datas[5], float))
+            dict['body_mass_g'].append(to_num_or_minus1(datas[6], int))
+            dict['sex'].append(to_str_or_minus1(datas[7]))
+            dict['year'].append(to_num_or_minus1(datas[8], int))
         f.close()
         return dict
     except FileNotFoundError:
         print(f"read file failed")
         return None
+
+def to_num_or_minus1(s, caster):
+    v = s.strip().strip('"')
+    if v == '' or v == 'NA':
+        return -1
+    try:
+        return caster(v)
+    except ValueError:
+        return -1
+
+def to_str_or_minus1(s):
+    v = s.strip().strip('"')
+    return '-1' if v == '' or v == 'NA' else v
 
 def file_information(dict):
     # file information
@@ -50,8 +63,8 @@ def cal_ave_mass(dict):
     total = 0
     count = 0
     for i in range(len(dict['body_mass_g'])):
-        if (dict['body_mass_g'][i] != 'NA') and (dict['sex'][i] == 'male') and (dict['island'][i] == 'Torgersen'):
-            total += int(dict['body_mass_g'][i])
+        if (dict['body_mass_g'][i] != -1) and (dict['sex'][i] == 'male') and (dict['island'][i] == 'Torgersen'):
+            total += dict['body_mass_g'][i]
             count += 1
     return total / count
 
@@ -62,13 +75,13 @@ def cal_length_diff(dict):
     total_len_adelie = 0
     num_adelie = 0
     for i in range(len(dict['island'])):
-        if (dict['island'][i] == 'Dream') and (dict['bill_length_mm'][i] != 'NA'):
+        if (dict['island'][i] == 'Dream') and (dict['bill_length_mm'][i] != -1):
             if dict['species'][i] == 'Chinstrap':
                 num_chinstrap += 1
-                total_len_chinstrap += float(dict['bill_length_mm'][i])
+                total_len_chinstrap += dict['bill_length_mm'][i]
             if dict['species'][i] == 'Adelie':
                 num_adelie += 1
-                total_len_adelie += float(dict['bill_length_mm'][i])
+                total_len_adelie += dict['bill_length_mm'][i]
     ave_len_chinstrap = total_len_chinstrap / num_chinstrap
     ave_len_adelie = total_len_adelie / num_adelie
     diff = ave_len_chinstrap - ave_len_adelie
