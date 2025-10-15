@@ -3,7 +3,7 @@
 # Name: Zuming Hu
 # Student ID: 32862457
 # Email: zuminghu@umich.edu
-# Collaborators: Used GenAI to debug
+# Collaborators: Used GenAI to debug and ask AI how to let the test file to use the file dicionary it is located.
 # =========================================================
 
 def load_file(filename):
@@ -53,39 +53,58 @@ def file_information(dict):
     print("\nSample row: ", end = '')
     for key in dict.keys():
         print(dict[key][0], end = ' ')
-    
-    print(dict['body_mass_g'])
-    print(len(dict['body_mass_g']))
+
     pass
 
-def cal_ave_mass(dict):
-    # Average body mass for male penguins on Torgersen island
-    total = 0
+def cal_ave_mass(data):
+    """
+    Average body mass for male penguins on Torgersen island.
+    约定：缺失值用 -1；无样本或全缺失时返回 0.0
+    """
+    total = 0.0
     count = 0
-    for i in range(len(dict['body_mass_g'])):
-        if (dict['body_mass_g'][i] != -1) and (dict['sex'][i] == 'male') and (dict['island'][i] == 'Torgersen'):
-            total += dict['body_mass_g'][i]
+    n = len(data['body_mass_g'])
+    for i in range(n):
+        mass = data['body_mass_g'][i]
+        if (
+            mass != -1 and
+            data['sex'][i] == 'male' and
+            data['island'][i] == 'Torgersen'
+        ):
+            total += float(mass)
             count += 1
-    return total / count
+    return total / count if count else 0.0
 
-def cal_length_diff(dict):
-    # The diﬀerence between the average bill length for diﬀerence species on Dream island?
-    num_chinstrap = 0
-    total_len_chinstrap = 0
-    total_len_adelie = 0
-    num_adelie = 0
-    for i in range(len(dict['island'])):
-        if (dict['island'][i] == 'Dream') and (dict['bill_length_mm'][i] != -1):
-            if dict['species'][i] == 'Chinstrap':
-                num_chinstrap += 1
-                total_len_chinstrap += dict['bill_length_mm'][i]
-            if dict['species'][i] == 'Adelie':
-                num_adelie += 1
-                total_len_adelie += dict['bill_length_mm'][i]
-    ave_len_chinstrap = total_len_chinstrap / num_chinstrap
-    ave_len_adelie = total_len_adelie / num_adelie
-    diff = ave_len_chinstrap - ave_len_adelie
-    return diff
+
+def cal_length_diff(data, sp_a='Chinstrap', sp_b='Adelie'):
+    """
+    Dream 岛上 sp_a 与 sp_b 的平均喙长差（sp_a均值 - sp_b均值）。
+    约定：缺失用 -1；若任一物种在 Dream 无有效样本，则返回 0.0。
+    """
+    total_a = total_b = 0.0
+    num_a = num_b = 0
+
+    n = len(data['bill_length_mm'])
+    for i in range(n):
+        if data['island'][i] != 'Dream':
+            continue
+        bl = data['bill_length_mm'][i]
+        if bl == -1:
+            continue
+        species = data['species'][i]
+        if species == sp_a:
+            total_a += float(bl)
+            num_a += 1
+        elif species == sp_b:
+            total_b += float(bl)
+            num_b += 1
+
+    if num_a == 0 or num_b == 0:
+        return 0.0
+
+    ave_a = total_a / num_a
+    ave_b = total_b / num_b
+    return ave_a - ave_b
 
 def generate_report(dict):
     f = open("output.txt", "w")
@@ -97,6 +116,6 @@ def generate_report(dict):
 
 def main():
     dict = load_file("penguins.csv")
-    file_information(dict)
+    # file_information(dict)
     generate_report(dict)
 main()
