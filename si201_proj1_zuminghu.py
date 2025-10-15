@@ -57,10 +57,6 @@ def file_information(dict):
     pass
 
 def cal_ave_mass(data):
-    """
-    Average body mass for male penguins on Torgersen island.
-    约定：缺失值用 -1；无样本或全缺失时返回 0.0
-    """
     total = 0.0
     count = 0
     n = len(data['body_mass_g'])
@@ -77,10 +73,6 @@ def cal_ave_mass(data):
 
 
 def cal_length_diff(data, sp_a='Chinstrap', sp_b='Adelie'):
-    """
-    Dream 岛上 sp_a 与 sp_b 的平均喙长差（sp_a均值 - sp_b均值）。
-    约定：缺失用 -1；若任一物种在 Dream 无有效样本，则返回 0.0。
-    """
     total_a = total_b = 0.0
     num_a = num_b = 0
 
